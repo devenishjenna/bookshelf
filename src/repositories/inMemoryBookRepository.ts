@@ -1,9 +1,16 @@
 import { Book, CreateBookRequest, UpdateBookRequest } from "../models/book";
 import { IBookRepository } from "./bookRepository";
 
+/**
+ * In-memory implementation of IBookRepository.
+ *
+ * State lives in a private array and is lost when the process restarts, so
+ * this is intended for development and testing. Replacing it with a
+ * persistent store requires no changes outside the composition root.
+ */
 export class InMemoryBookRepository implements IBookRepository {
 
-  // defining some example books
+  // Seed data so the API returns something useful on a fresh start.
   private books: Book[] = [
     { id: 1, title: "The Hobbit", author: "J.R.R. Tolkien", genre: "Fantasy", price: 14.99 },
     { id: 2, title: "A Game of Thrones", author: "George R.R. Martin", genre: "Fantasy", price: 19.99 },
@@ -13,9 +20,11 @@ export class InMemoryBookRepository implements IBookRepository {
   ];
 
   // next id to assign
-  private nextId = 3;
+  private nextId = 6;
 
   async findAll(genre?: string): Promise<Book[]> {
+    // Spread so callers get a copy — handing out the live array would let
+    // them mutate the store from outside the class.
     if (!genre) return [...this.books];
 
     return this.books.filter(
@@ -29,7 +38,6 @@ export class InMemoryBookRepository implements IBookRepository {
     );
   }
 
-  // returns newly created book
   async create(data: CreateBookRequest): Promise<Book> {
     const book: Book = {id: this.nextId++, ...data};
     this.books.push(book);
@@ -37,25 +45,22 @@ export class InMemoryBookRepository implements IBookRepository {
     return book;
   }
 
-  // returns updated book or undefined
   async update(id: number, data: UpdateBookRequest): Promise<Book | undefined> {
     const index = this.books.findIndex((b) => (b.id === id));
-    // id not found
     if (index === - 1) return undefined;
 
-    // create updated book with original data, overwriting with new data
+    // Later spreads win: supplied fields overwrite existing ones, untouched
+    // fields survive, and `id` is applied last so it can never be changed.
     const updated: Book = { ...this.books[index], ...data, id};
     this.books[index] = updated;
 
     return updated;
   }
 
-  // returns true if deleted, false if not found
   async delete(id: number): Promise<boolean> {
     const index = this.books.findIndex((b) => b.id === id);
-    // id not found
     if (index === -1) return false;
-    // remove book 
+
     this.books.splice(index, 1);
     
     return true;
