@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { BookService } from "../services/bookServices";
+import { BookService } from "../services/bookService";
 import { ValidationError } from "../errors/appErrors";
 import { UpdateBookRequest } from "../models/book";
 

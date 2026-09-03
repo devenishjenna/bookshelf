@@ -4,10 +4,11 @@ import { BookController } from "../controllers/bookController";
 export function createBookRouter(controller: BookController): Router {
   const router = Router();
 
+  // passing in references 
   router.get("/", controller.getAll);
   router.get("/:id", controller.getById);
   router.post("/", controller.create);
-  router.put("/", controller.update);
+  router.put("/:id", controller.update);
   router.delete("/:id", controller.delete);
 
   return router;

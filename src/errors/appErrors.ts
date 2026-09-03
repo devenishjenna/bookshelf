@@ -11,7 +11,7 @@ export class AppError extends Error {
     public readonly statusCode: number
   ) {
     super(message)
-    // Without this, every subclass would report its name as "Error".
+    // Without this, every subclass would have a name "Error".
     this.name = this.constructor.name
   }
 }
@@ -28,4 +28,5 @@ export class ValidationError extends AppError {
   constructor(message: string) {
     super(message, 400)
   }
-}
+} 
+  
