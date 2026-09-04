@@ -6,6 +6,7 @@ export function createBookRouter(controller: BookController): Router {
 
   // passing in references to controller functions
   router.get("/", controller.getAll);
+  router.get('/discounted-price', controller.getDiscountedPrice)
   router.get("/:id", controller.getById);
   router.post("/", controller.create);
   router.put("/:id", controller.update);

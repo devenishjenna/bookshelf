@@ -1,13 +1,7 @@
 import { Book, CreateBookRequest, UpdateBookRequest } from "../models/book";
 import { IBookRepository } from "./bookRepository";
 
-/**
- * In-memory implementation of IBookRepository.
- *
- * State lives in a private array and is lost when the process restarts, so
- * this is intended for development and testing. Replacing it with a
- * persistent store requires no changes outside the composition root.
- */
+// In-memory implementation of IBookRepository.
 export class InMemoryBookRepository implements IBookRepository {
 
   // Seed data so the API returns something useful on a fresh start.
@@ -39,7 +33,7 @@ export class InMemoryBookRepository implements IBookRepository {
   }
 
   async create(data: CreateBookRequest): Promise<Book> {
-    const book: Book = {id: this.nextId++, ...data};
+    const book: Book = {...data, id: this.nextId++};
     this.books.push(book);
 
     return book;

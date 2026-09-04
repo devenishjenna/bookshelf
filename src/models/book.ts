@@ -1,4 +1,4 @@
-/** A book as it exists in the inventory. */
+// a book as it exists in the inventory
 export interface Book {
   id: number
   title: string
@@ -7,8 +7,9 @@ export interface Book {
   price: number
 }
 
-/** Payload for creating a book. `id` is omitted because the server assigns it. */
+// payload for creating a book. `id` is omitted because the server assigns it
+// using type to allow for Omit
 export type CreateBookRequest = Omit<Book, "id">
 
-/** Payload for updating a book. All fields optional; `id` can never be changed. */
+// payload for updating a book. All fields optional, `id` can never be changed
 export type UpdateBookRequest = Partial<CreateBookRequest>
