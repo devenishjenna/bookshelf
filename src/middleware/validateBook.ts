@@ -4,6 +4,11 @@ import { ValidationError } from "../errors/appErrors";
 // 3 arguments so express knows it's non-error handling middleware
 // check if ALL required fields are present AND are valid
 export function validateCreateBook(req: Request, res: Response, next: NextFunction): void {
+  // express 5 leaves req.body undefined when no body is sent
+  if (!req.body || typeof req.body !== "object") {
+    throw new ValidationError("Request body is required");
+  }
+
   // no id fields allowed
   if ("id" in req.body) {
    throw new ValidationError("'id' must not be provided, it is assigned by the server");
@@ -31,6 +36,11 @@ export function validateCreateBook(req: Request, res: Response, next: NextFuncti
 }
 
 export function validateUpdateBook(req: Request, res: Response, next: NextFunction): void {
+  // express 5 leaves req.body undefined when no body is sent
+  if (!req.body || typeof req.body !== "object") {
+    throw new ValidationError("Request body is required");
+  }
+
   if ("id" in req.body) {
    throw new ValidationError("'id' must not be provided, it is assigned by the server");
   }
