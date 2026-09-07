@@ -10,11 +10,20 @@ export function errorHandler(
 ): void {
   // deliberate errors
   if (err instanceof AppError) {
-    console.log("**AppError**")
     res.status(err.statusCode).json({
       error: err.name,
       message: err.message
     })
+    return; // without this the 500 below also runs and the response is sent twice
+  }
+
+  // express.json() rejects malformed bodies - the client's fault, not ours
+  if (err instanceof SyntaxError && "statusCode" in err) {
+    res.status(400).json({
+      error: "ValidationError",
+      message: "Malformed JSON body"
+    });
+    return;
   }
 
   // any other bugs
@@ -26,7 +35,6 @@ export function errorHandler(
 }
 
 export function notFoundHandler(req: Request, res: Response): void {
-  console.log("**notFoundHandler**")
   res.status(404).json({
     error: "NotFound",
     message: `Route ${req.method} ${req.path} not found`,
